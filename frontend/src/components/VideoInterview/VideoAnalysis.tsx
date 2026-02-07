@@ -30,13 +30,7 @@ export const VideoAnalysis: React.FC<VideoAnalysisProps> = ({
         confidence: 50,
         stress: 50,
     });
-    const [analysis, setAnalysis] = useState({
-        focus: 50,
-        emotion: 50,
-        confidence: 50,
-        stress: 50,
-        hint: "Initializing camera...",
-    });
+    
     
     // Smoothing factor (0.3 = 30% new value, 70% old value)
     const SMOOTHING_FACTOR = 0.3;
@@ -72,7 +66,6 @@ export const VideoAnalysis: React.FC<VideoAnalysisProps> = ({
         ws.onopen = () => {
             console.log("WebSocket connected for video analysis");
             setIsConnected(true);
-            setAnalysis(prev => ({ ...prev, hint: "AI connected. Look at the camera!" }));
         };
         
         ws.onmessage = (event) => {
@@ -85,10 +78,6 @@ export const VideoAnalysis: React.FC<VideoAnalysisProps> = ({
                     confidence: smoothValue(prev.confidence, data.confidence || 0),
                     stress: smoothValue(prev.stress, data.stress || 0),
                 }));
-                setAnalysis(prev => ({
-                    ...prev,
-                    hint: data.hint || "Analyzing..."
-                }));
             } catch (e) {
                 console.error("Metric Parse Error", e);
             }
@@ -96,7 +85,6 @@ export const VideoAnalysis: React.FC<VideoAnalysisProps> = ({
         
         ws.onerror = (error) => {
             console.error("WebSocket error:", error);
-            setAnalysis(prev => ({ ...prev, hint: "Connection error. Retrying..." }));
         };
         
         ws.onclose = () => {
@@ -172,42 +160,46 @@ export const VideoAnalysis: React.FC<VideoAnalysisProps> = ({
                 </div>
 
                 {/* Dynamic Overlay Messages */}
-                {/* Dynamic Overlay Messages - Centered Dark Capsule Style */}
                 <AnimatePresence mode="wait">
                     <motion.div 
                         key={isAISpeaking ? 'ai' : isUserSpeaking ? 'user' : 'hint'}
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.9, opacity: 0 }}
-                        className="absolute bottom-6 left-1/2 -translate-x-1/2 w-auto max-w-md z-20"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 20, opacity: 0 }}
+                        className="absolute bottom-6 left-1/2 -translate-x-1/2 w-auto min-w-[300px] max-w-md z-20"
                     >
                         {isAISpeaking ? (
-                            <div className="bg-neutral-900/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-xl flex items-center gap-3 border border-white/5">
-                                <span className="text-blue-400 animate-pulse"><Activity size={18} /></span>
-                                <p className="text-sm font-medium text-white tracking-wide">
-                                    AI is speaking... Listen carefully
-                                </p>
+                            <div className="bg-card/70 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex items-center gap-4 border border-purple-500/30">
+                                <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400 animate-pulse">
+                                    <Activity size={20} />
+                                </div>
+                                <div className="flex flex-col flex-1">
+                                    <p className="text-sm font-bold text-white tracking-wide uppercase">AI Speaking</p>
+                                    <p className="text-xs text-purple-300/80">Listening carefully - Prepare your response</p>
+                                </div>
                             </div>
                         ) : isUserSpeaking ? (
-                            <div className="bg-neutral-900/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-xl flex items-center gap-3 border border-white/5">
-                                <span className="text-emerald-400"><Hand size={18} /></span>
-                                <div className="flex flex-col">
-                                    <p className="text-sm font-medium text-white tracking-wide">
-                                        Maintain good posture
-                                    </p>
-                                    <p className="text-[10px] text-zinc-400 font-medium">Keep eye contact • Speak clearly</p>
+                            <div className="bg-card/70 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex items-center gap-4 border border-emerald-500/30">
+                                <div className="p-2 bg-emerald-500/20 rounded-lg text-emerald-400">
+                                    <Hand size={20} />
+                                </div>
+                                <div className="flex flex-col flex-1">
+                                    <p className="text-sm font-bold text-white tracking-wide uppercase">Analysising Response</p>
+                                    <p className="text-xs text-emerald-300/80">Maintain steady eye contact & clear articulation</p>
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-neutral-900/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-xl flex items-center gap-3 border border-white/5">
-                                <span className="text-orange-400 animate-pulse"><Sparkles size={18} /></span>
-                                <div className="flex flex-col">
-                                    <p className="text-sm font-medium text-white tracking-wide">
-                                        Your turn to speak
+                            <div className="bg-card/70 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex items-center gap-4 border border-blue-500/30">
+                                <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400">
+                                    <Sparkles size={20} />
+                                </div>
+                                <div className="flex flex-col flex-1">
+                                    <p className="text-base font-bold text-white tracking-wide">
+                                        {currentHint ? "💡 Suggestion Tip" : "✨ Your Turn"}
                                     </p>
-                                    {currentHint && (
-                                        <p className="text-[10px] text-zinc-300 mt-0.5 max-w-[200px] leading-tight">{currentHint}</p>
-                                    )}
+                                    <p className="text-xs text-blue-300/90 leading-snug font-medium">
+                                        {currentHint || "Turn on mic and speak confidently - Share your relevant experience"}
+                                    </p>
                                 </div>
                             </div>
                         )}

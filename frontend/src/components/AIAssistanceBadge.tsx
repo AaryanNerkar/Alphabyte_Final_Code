@@ -40,10 +40,10 @@ export const AIAssistanceBadge: React.FC<AIAssistanceBadgeProps> = ({ isConnecte
                 </span>
 
                 {/* Icon */}
-                <Brain size={12} />
+                <Brain size={14} />
 
                 {/* Text */}
-                <span>AI Assistance {isConnected ? 'ON' : 'OFF'}</span>
+                <span className="uppercase tracking-wide">{isConnected ? 'AI System ON' : 'AI System OFF'}</span>
             </motion.div>
 
             {/* Tooltip */}

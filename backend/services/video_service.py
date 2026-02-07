@@ -23,12 +23,12 @@ class Stabilizer:
         self.p0 = None
         self.is_steady = False
         
-        # Smoothing buffers - reasonable starting values
-        self.ui_focus = 70.0
-        self.ui_emotion = 50.0
-        self.confidence_score = 60.0
-        self.focus_score = 70.0
-        self.emotion_score = 50.0
+        # Smoothing buffers - improved starting values for better accuracy
+        self.ui_focus = 75.0
+        self.ui_emotion = 55.0
+        self.confidence_score = 65.0
+        self.focus_score = 75.0
+        self.emotion_score = 55.0
         
         # Internal high-precision float values
         self.internal_focus = 70.0

@@ -40,11 +40,6 @@ export const HintLevelButtons: React.FC<HintLevelButtonsProps> = ({ onRequestHin
         <div className="relative">
             {/* Main Buttons Container - Segmented Control / Bracket Style */}
             <div className="bg-card/40 backdrop-blur-sm rounded-xl p-2 border border-border/40">
-                <div className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1.5 px-1 uppercase tracking-wider opacity-70">
-                    <Lightbulb size={12} />
-                    AI Hints
-                </div>
-                
                 <div className="flex items-center gap-1 bg-background/50 p-1.5 rounded-lg border border-border/30 h-12">
                     {/* Small Hint */}
                     <motion.button
